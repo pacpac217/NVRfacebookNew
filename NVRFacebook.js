@@ -3405,145 +3405,9 @@ function upSite(intKho) {
 
 let test = 0;
 
-// ═══════════════════════════════════════════════════════════════
-// 🎯 HÀM HIỂN THỊ DIALOG XÁC NHẬN UPDATE
-// ═══════════════════════════════════════════════════════════════
-function showUpdateDialog() {
-    toast("╔════════════════════════════════╗", "center", 1);
-    toast("║  ❓ CÓ THỰC HIỆN UPDATE?      ║", "center", 1);
-    toast("╚════════════════════════════════╝", "center", 2);
-    
-    toast("📌 Hãy chọn:\n👆 Click lên = CÓ (Update & Run)\n👇 Click xuống = KHÔNG", "center", 3);
-    
-    // Tạo màn hình hiển thị nút CÓ / KHÔNG
-    // Vẽ 2 nút trên màn hình bằng toast
-    usleep(500000);
-    toast("═════════════════════════════", "center", 1);
-    toast("  ✅ CÓ (Update & Chạy)      ", "center", 1);
-    toast("═════════════════════════════", "center", 1);
-    usleep(500000);
-    toast("═════════════════════════════", "center", 1);
-    toast("  ❌ KHÔNG (Hủy)              ", "center", 1);
-    toast("═════════════════════════════", "center", 2);
-    
-    // Chờ người dùng click - mặc định là CÓ sau 10 giây
-    let choiceTime = _currentTime();
-    while (_timeStart(choiceTime) < 10) {
-        usleep(500000);
-    }
-    
-    // Hiển thị kết quả
-    toast("⏱️ Hết thời gian - Mặc định: CÓ UPDATE!", "center", 2);
-    return true; // Mặc định là CÓ
-}
 
-// ═══════════════════════════════════════════════════════════════
-// 🎯 HÀM LƯU TRẠNG THÁI VÀO FILE
-// ═══════════════════════════════════════════════════════════════
-function saveUpdateStatus(status, filename = "update_status.txt") {
-    const pathUpdateStatus = pathData + filename;
-    const timestamp = new Date().toLocaleString();
-    const statusText = status ? "UPDATE_YES" : "UPDATE_NO";
-    const content = statusText + " | " + timestamp;
-    
-    try {
-        fs.writeFile(pathUpdateStatus, content, 'w');
-        toast("✅ Đã lưu trạng thái: " + statusText, "center", 2);
-    } catch (e) {
-        toast("⚠️ Lỗi lưu file: " + e.message, "center", 2);
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 🎯 HÀM DOWNLOAD CODE TỪ GITHUB
-// ═══════════════════════════════════════════════════════════════
-function downloadUpdateFromGithub() {
-    const githubUrl = "https://raw.githubusercontent.com/pacpac217/NVRfacebookNew/refs/heads/main/NVRFacebook.js";
-    const currentFilePath = rootDir() + "/Facebook/regNVR.js";
-    
-    toast("📥 Đang tải code từ GitHub...", "center", 2);
-    
-    try {
-        // Tải file từ GitHub
-        let curlCommand = `curl -s "${githubUrl}" -o "${currentFilePath}"`;
-        let result = exec(curlCommand);
-        
-        toast("✅ Tải code thành công!", "center", 2);
-        usleep(1000000);
-        
-        toast("💾 Đang lưu file...", "center", 2);
-        usleep(1000000);
-        
-        toast("✅ Đã cập nhật file! Khởi động lại tool...", "center", 2);
-        usleep(2000000);
-        
-        // Khởi động lại file vừa tải
-        appRun(rootDir() + "/Facebook/test_tuongtaccheo_new.js");
-        
-        return true;
-    } catch (e) {
-        toast("❌ Lỗi tải file: " + e.message, "center", 3);
-        return false;
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 🎯 HÀM KIỂM TRA VÀ HIỂN THỊ DIALOG CẬP NHẬT
-// ═══════════════════════════════════════════════════════════════
-function checkAndShowUpdateDialog() {
-    const pathUpdateStatus = pathData + "update_status.txt";
-    
-    // Hiển thị thông báo bắt đầu
-    toast("🔍 Kiểm tra cập nhật...", "center", 2);
-    usleep(1000000);
-    
-    // Hiển thị dialog xác nhận
-    toast("💬 Tool sắp chạy!", "center", 2);
-    
-    // Hiển thị giao diện chọn
-    let userChoice = showUpdateDialog();
-    
-    // Lưu lựa chọn của người dùng
-    saveUpdateStatus(userChoice);
-    
-    // Nếu chọn CÓ thì tải code mới từ GitHub
-    if (userChoice) {
-        toast("🔄 Bạn chọn CÓ - Đang cập nhật...", "center", 2);
-        let downloadSuccess = downloadUpdateFromGithub();
-        
-        if (!downloadSuccess) {
-            toast("⚠️ Cập nhật thất bại, chạy code cũ...", "center", 2);
-            usleep(2000000);
-            return false; // Chạy code cũ
-        }
-        return true; // Đã cập nhật xong, sẽ khởi động lại
-    } else {
-        // Nếu chọn KHÔNG thì chạy code cũ bình thường
-        toast("⏭️ Bạn chọn KHÔNG - Chạy code cũ...", "center", 2);
-        return false;
-    }
-}
 
 if (test == 0) {
-    // ✅ KIỂM TRA VÀ HIỂN THỊ DIALOG CẬP NHẬT
-    let shouldContinueWithOldCode = checkAndShowUpdateDialog();
-    
-    // Nếu chọn CÓ và tải thành công, sẽ khởi động lại
-    // Nếu chọn KHÔNG hoặc tải thất bại, sẽ tiếp tục với code cũ
-    
-    if (shouldContinueWithOldCode) {
-        // Đã cập nhật xong, sẽ khởi động lại từ file mới
-        toast("✅ Đã cập nhật xong! File sẽ tự khởi động lại.", "center", 3);
-        // Thoát khỏi file cũ, file mới sẽ chạy
-    } else {
-        // Chạy code cũ như bình thường
-        toast("✅ Bắt đầu chạy tool (code cũ)...", "center", 2);
-        usleep(2000000);
-    
-    // ═══════════════════════════════════════════════════════════════
-    // 🔥 PHẦN CHÍNH CỦA TOOL
-    // ═══════════════════════════════════════════════════════════════
-    
     let thoigianhientai = new Date();
     let timein =
         thoigianhientai.getHours() + "h" + thoigianhientai.getMinutes() + "p";
@@ -3610,6 +3474,5 @@ if (test == 0) {
         upTile(nameIphone, thanhcong, dem - thanhcong, timein, timeout);
 
         usleep(3000000);
-    }
     }
 }
