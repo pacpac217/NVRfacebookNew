@@ -58,7 +58,7 @@ var base64 = (function () {
 
 
 // 🚫 TẮT TOÀN BỘ CONSOLE.LOG
-//console.log = function () { }; // Override console.log thành hàm rỗng
+console.log = function () { }; // Override console.log thành hàm rỗng
 
 const pathData = rootDir() + "/Facebook/data/";
 const imgKhongGuiLaiMa = pathData + "imgKhongGuiLaiMa.png";
@@ -3093,14 +3093,14 @@ function _reset(strMode) {
     }
 
     console.log("🔄 [_RESET] Bắt đầu mở CCinfo và change device...");
-
+    
     // Thử tối đa 3 lần: mở CCinfo → change device
     let resetRetries = 0;
     let maxResetRetries = 3;
-
+    
     while (resetRetries < maxResetRetries) {
         console.log(`🔄 [_RESET] Lần thử #${resetRetries + 1}/${maxResetRetries}`);
-
+        
         // Mở CCinfo
         let tg = _currentTime();
         let ccinfoOpened = false;
@@ -3112,19 +3112,19 @@ function _reset(strMode) {
                 break;
             }
         }
-
+        
         if (!ccinfoOpened) {
             console.log("❌ [_RESET] Không thể mở CCinfo sau 30s");
             toast("❌ Không thể mở CCinfo", "center", 2);
             return 0;
         }
-
+        
         console.log("✅ [_RESET] CCinfo đã mở, gọi changer()...");
-
+        
         // Reset counter và gọi changer
         changerAttempts = 0;
         let changerResult = changer();
-
+        
         if (changerResult) {
             // Change thành công
             console.log("✅ [_RESET] Change device thành công!");
@@ -3133,30 +3133,30 @@ function _reset(strMode) {
             // Change thất bại
             console.log(`⚠️ [_RESET] Change thất bại lần ${resetRetries + 1}, đóng CCinfo và thử lại...`);
             toast(`⚠️ Change thất bại, thử lại ${resetRetries + 1}/${maxResetRetries}`, "center", 2);
-
+            
             _closeCcinfo();
             usleep(1000000); // Chờ 2 giây
-
+            
             resetRetries++;
         }
     }
-
+    
     // Kiểm tra kết quả cuối cùng
     if (resetRetries >= maxResetRetries) {
         console.log("❌ [_RESET] Thất bại sau 3 lần thử, return 0");
         toast("❌ Change device thất bại hoàn toàn", "center", 3);
         return 0;
     }
-
+    
     console.log("✅ [_RESET] Changer thành công, click nút Restore...");
     _sleep(3);
-
+    
     // Click nút Restore
     console.log("📦 [_RESET] Click nút Restore tại (543, 823)");
     _Click(543, 823); // Nút Restore
     toast("📦 Đang restore...", "center", 2);
     _sleep(5); // Đợi 5 giây
-
+    
     console.log("✅ [_RESET] Hoàn tất reset - CCinfo đã change device & restore");
     return 1;
 }
@@ -3173,14 +3173,14 @@ function changer() {
     console.log("🔧 [CHANGER] Bắt đầu change device, attempt #" + changerAttempts);
     toast("Changer...", "center", 1);
     usleep(1000000); // Chờ 1 giây
-
+    
     // Chạy lệnh ccinfo -changer
     let command = "ccinfo -changer";
     console.log("🔧 [CHANGER] Executing: " + command);
     let result = exec(command);
-
+    
     console.log("🔧 [CHANGER] Result: " + result);
-
+    
     // Kiểm tra kết quả có chứa "Success"
     if (result && result.indexOf("Success") !== -1) {
         console.log("✅ [CHANGER] Change device thành công!");
@@ -3190,7 +3190,7 @@ function changer() {
     } else {
         console.log("⚠️ [CHANGER] Change device thất bại, retry #" + changerAttempts);
         usleep(1000000); // Chờ 1 giây trước khi retry
-
+        
         if (changerAttempts > 2) {
             // Đã thử quá 3 lần -> return false
             console.log("❌ [CHANGER] Đã thử 3 lần, thất bại hoàn toàn!");
@@ -3408,27 +3408,6 @@ let test = 0;
 
 
 if (test == 0) {
-    // ✅ KIỂM TRA CẬP NHẬT TRƯỚC KHI CHẠY TOOL
-    console.log("========== [MAIN] KHỞI ĐỘNG FILE CHÍNH ==========");
-    console.log("[MAIN] Kiểm tra cập nhật...");
-    
-    let shouldRunWithUpdateCode = checkAndShowUpdateDialogForMain();
-    
-    if (shouldRunWithUpdateCode) {
-        // Đã update xong - khởi động lại file
-        console.log("[MAIN] ========== KHỞI ĐỘNG LẠI VỚI CODE MỚI ==========");
-        usleep(1000000);
-        appRun(rootDir() + "/Facebook/regNVR.js");
-        // Thoát khỏi file cũ
-    }
-    
-    // Nếu không update hoặc update thất bại - tiếp tục chạy code cũ
-    console.log("[MAIN] Bắt đầu chạy tool...");
-    
-    // ═══════════════════════════════════════════════════════════════
-    // 🔥 PHẦN CHÍNH CỦA TOOL
-    // ═══════════════════════════════════════════════════════════════
-    
     let thoigianhientai = new Date();
     let timein =
         thoigianhientai.getHours() + "h" + thoigianhientai.getMinutes() + "p";
@@ -3497,376 +3476,3 @@ if (test == 0) {
         usleep(3000000);
     }
 }
-// ╔════════════════════════════════════════════════════════════════╗
-// ║  [MARKER_SEPARATOR] - TỰ ĐỘNG CHỈNH SỬA KHI DOWNLOAD CODE    ║
-// ║  Tool sẽ tự động thêm 30 dòng trắng trước marker này          ║
-// ║  Không được xóa marker này!                                   ║
-// ╚════════════════════════════════════════════════════════════════╝
-
-// ═══════════════════════════════════════════════════════════════
-// 📦 CODE UPDATE - BẮT ĐẦU TỪ DÒNG NÀY (PHẦN RIÊNG BIỆT)
-// ═══════════════════════════════════════════════════════════════
-// Chức năng: Kiểm tra và tải code mới từ GitHub
-// Khi update: chỉ cập nhật phần code chính (từ dòng 1 đến trước dòng này)
-// ═══════════════════════════════════════════════════════════════
-
-// ═══════════════════════════════════════════════════════════════
-// 🎯 HÀM HIỂN THỊ DIALOG XÁC NHẬN UPDATE
-// ═══════════════════════════════════════════════════════════════
-// 🎯 HÀM LƯU TRẠNG THÁI VÀO FILE
-// ═══════════════════════════════════════════════════════════════
-function saveUpdateStatusForMain(status, filename = "update_status.txt") {
-    const pathUpdateStatus = pathData + filename;
-    const timestamp = new Date().toLocaleString();
-    const statusText = status ? "UPDATE_YES" : "UPDATE_NO";
-    const content = statusText + " | " + timestamp;
-    
-    console.log("[SAVE] Lưu trạng thái: " + statusText + " vào file: " + pathUpdateStatus);
-    try {
-        fs.writeFile(pathUpdateStatus, content, 'w');
-        console.log("[SAVE] ✅ Đã lưu file thành công");
-        toast("✅ Đã lưu trạng thái: " + statusText, "center", 2);
-    } catch (e) {
-        console.log("[SAVE] ❌ Lỗi lưu file: " + e.message);
-        toast("⚠️ Lỗi lưu file: " + e.message, "center", 2);
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 🎯 HÀM DOWNLOAD CODE TỪ GITHUB
-// ═══════════════════════════════════════════════════════════════
-function downloadUpdateFromGithubForMain() {
-    const githubUrl = "https://raw.githubusercontent.com/pacpac217/NVRfacebookNew/refs/heads/main/NVRFacebook.js";
-    const currentFilePath = rootDir() + "/Facebook/regNVR.js";
-    const tempFilePath = currentFilePath + ".tmp";
-    
-    console.log("[DOWNLOAD] Bắt đầu tải code từ GitHub");
-    console.log("[DOWNLOAD] URL: " + githubUrl);
-    console.log("[DOWNLOAD] Đường dẫn lưu: " + currentFilePath);
-    toast("📥 Đang tải code từ GitHub...", "center", 2);
-    
-    try {
-        // Xóa file tạm nếu tồn tại
-        try {
-            fs.remove(tempFilePath);
-        } catch (e) {}
-        
-        // Tải file từ GitHub
-        let curlCommand = `curl -s "${githubUrl}" -o "${tempFilePath}"`;
-        console.log("[DOWNLOAD] Thực thi curl command");
-        let result = exec(curlCommand);
-        console.log("[DOWNLOAD] Curl result: " + result);
-        
-        // ✅ KIỂM TRA FILE TẢI VỀ
-        let [downloadedContent, readError] = fs.readFile(tempFilePath);
-        
-        if (!downloadedContent || readError) {
-            console.log("[DOWNLOAD] ❌ Không thể đọc file tải về: " + readError);
-            toast("❌ Không thể đọc file tải về", "center", 2);
-            return false;
-        }
-        
-        // ✅ KIỂM TRA KÍCH THƯỚC FILE
-        let fileSize = downloadedContent.length;
-        let lineCount = downloadedContent.split('\n').length;
-        
-        console.log("[DOWNLOAD] Kích thước file: " + fileSize + " bytes, Số dòng: " + lineCount);
-        
-        // Nếu file quá nhỏ (dưới 10 dòng hoặc trống)
-        if (fileSize < 100 || lineCount < 10) {
-            console.log("[DOWNLOAD] ❌ File tải về quá nhỏ (chỉ " + lineCount + " dòng). Dùng code hiện tại");
-            toast("❌ File tải về không hợp lệ (quá nhỏ)", "center", 2);
-            usleep(1000000);
-            // Xóa file tạm
-            try {
-                fs.remove(tempFilePath);
-            } catch (e) {}
-            return false;
-        }
-        
-        // ✅ KIỂM TRA NỘI DUNG FILE
-        // Nếu file chứa HTML error (thường khi link lỗi)
-        if (downloadedContent.indexOf("404") !== -1 || downloadedContent.indexOf("<!DOCTYPE") !== -1) {
-            console.log("[DOWNLOAD] ❌ File tải về là lỗi HTTP. Dùng code hiện tại");
-            toast("❌ Link GitHub lỗi (404 hoặc lỗi server)", "center", 2);
-            usleep(1000000);
-            // Xóa file tạm
-            try {
-                fs.remove(tempFilePath);
-            } catch (e) {}
-            return false;
-        }
-        
-        // ✅ BƯỚC QUAN TRỌNG: MERGE CODE - GIỮ NGUYÊN PHẦN CODE UPDATE
-        console.log("[DOWNLOAD] ✅ File tải về hợp lệ. Bắt đầu merge code...");
-        
-        // Đọc file hiện tại
-        let [currentContent, currentError] = fs.readFile(currentFilePath);
-        if (!currentContent || currentError) {
-            console.log("[DOWNLOAD] ❌ Không thể đọc file hiện tại: " + currentError);
-            try {
-                fs.remove(tempFilePath);
-            } catch (e) {}
-            return false;
-        }
-        
-        // Tìm marker trong file hiện tại
-        const markerLine = "[MARKER_SEPARATOR]";
-        const markerIndex = currentContent.indexOf(markerLine);
-        
-        if (markerIndex === -1) {
-            console.log("[DOWNLOAD] ⚠️ Không tìm thấy marker trong file hiện tại. Chỉ cập nhật toàn bộ file");
-            // Nếu không có marker, thay thế toàn bộ file
-            try {
-                fs.remove(currentFilePath);
-            } catch (e) {}
-            exec(`mv "${tempFilePath}" "${currentFilePath}"`);
-            console.log("[DOWNLOAD] ✅ Đã cập nhật file thành công!");
-            toast("✅ Tải & cập nhật code thành công!", "center", 2);
-            usleep(1500000);
-            return true;
-        }
-        
-        // Tìm dòng bắt đầu marker
-        let markerLineStart = currentContent.lastIndexOf('\n', markerIndex);
-        if (markerLineStart === -1) markerLineStart = 0;
-        else markerLineStart++; // Bỏ qua ký tự \n
-        
-        console.log("[DOWNLOAD] ✅ Tìm thấy marker. Bắt đầu merge...");
-        
-        // Lấy phần code update (từ marker trở đi)
-        let updateCodePart = currentContent.substring(markerLineStart);
-        
-        // Lấy phần code download (code mới từ GitHub)
-        let downloadCodePart = downloadedContent;
-        
-        // 🔒 BƯỚC QUAN TRỌNG: XÓA CÁC HÀM UPDATE NẾUCÓ TRONG GITHUB
-        // Nguyên do: Nếu GitHub chứa checkAndShowUpdateDialogForMain(), downloadUpdateFromGithubForMain(), v.v...
-        // thì sẽ trùng với hàm update ở dưới → gây lỗi
-        console.log("[DOWNLOAD] 🔒 Kiểm tra & xóa hàm update nếu GitHub chứa...");
-        
-        const updateFunctionNames = [
-            "checkAndShowUpdateDialogForMain",
-            "downloadUpdateFromGithubForMain",
-            "autoAdjustSeparatorForMain",
-            "saveUpdateStatusForMain"
-        ];
-        
-        // Xóa từng hàm update khỏi downloadCodePart nếu có
-        for (let funcName of updateFunctionNames) {
-            // Tìm pattern: function checkAndShowUpdateDialogForMain() { ... }
-            let funcPattern = new RegExp(`function\\s+${funcName}\\s*\\([^)]*\\)\\s*\\{[^{}]*(?:\\{[^{}]*\\}[^{}]*)*\\}`, 'g');
-            let matches = downloadCodePart.match(funcPattern);
-            
-            if (matches && matches.length > 0) {
-                console.log(`[DOWNLOAD] ⚠️ Phát hiện hàm '${funcName}' trong GitHub. Loại bỏ...`);
-                // Xóa hàm này khỏi code download
-                downloadCodePart = downloadCodePart.replace(funcPattern, '');
-            }
-        }
-        
-        // Dọn dẹp dòng trống thừa
-        downloadCodePart = downloadCodePart.replace(/\n\n\n+/g, '\n\n');
-        
-        console.log("[DOWNLOAD] ✅ Đã xoá hàm update khỏi GitHub code (nếu có)");
-        
-        // Merge: code mới (đã clean) + phần code update cũ
-        let mergedContent = downloadCodePart + "\n" + updateCodePart;
-        
-        // Lưu file đã merge
-        fs.remove(currentFilePath); // Xóa file cũ
-        fs.writeFile(currentFilePath, mergedContent, 'w');
-        
-        console.log("[DOWNLOAD] ✅ Đã merge code và lưu file thành công!");
-        console.log("[DOWNLOAD] ✅ Phần code update được giữ nguyên!");
-        
-        // Xóa file tạm
-        try {
-            fs.remove(tempFilePath);
-        } catch (e) {}
-        
-        toast("✅ Tải & cập nhật code thành công!", "center", 2);
-        usleep(1500000);
-        
-        return true;
-        
-    } catch (e) {
-        console.log("[DOWNLOAD] ❌ Lỗi: " + e.message);
-        toast("❌ Lỗi tải file: " + e.message, "center", 3);
-        usleep(1000000);
-        // Xóa file tạm khi lỗi
-        try {
-            fs.remove(tempFilePath);
-        } catch (e) {}
-        return false;
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 🎯 HÀM TỰ ĐỘNG CHỈNH SỬA FILE - THÊM 30 DÒNG TRẮNG
-// ═══════════════════════════════════════════════════════════════
-function autoAdjustSeparatorForMain(filePath) {
-    console.log("[AUTO_ADJUST] Bắt đầu chỉnh sửa file để thêm 30 dòng trắng");
-    toast("🔧 Chỉnh sửa file để phân cách code...", "center", 2);
-    
-    try {
-        // Đọc file
-        let [fileContent, error] = fs.readFile(filePath);
-        if (!fileContent || error) {
-            console.log("[AUTO_ADJUST] ❌ Lỗi đọc file: " + error);
-            return false;
-        }
-        
-        console.log("[AUTO_ADJUST] ✅ Đã đọc file thành công, độ dài: " + fileContent.length + " ký tự");
-        
-        // Tìm marker
-        const markerLine = "[MARKER_SEPARATOR]";
-        const markerIndex = fileContent.indexOf(markerLine);
-        
-        if (markerIndex === -1) {
-            console.log("[AUTO_ADJUST] ⚠️ Không tìm thấy marker, bỏ qua");
-            return false;
-        }
-        
-        console.log("[AUTO_ADJUST] ✅ Tìm thấy marker tại vị trí: " + markerIndex);
-        
-        // Tìm dòng bắt đầu từ marker (tìm \n cuối cùng trước marker)
-        let lineStartIndex = fileContent.lastIndexOf('\n', markerIndex);
-        if (lineStartIndex === -1) lineStartIndex = 0;
-        else lineStartIndex++; // Bỏ qua ký tự \n
-        
-        console.log("[AUTO_ADJUST] Dòng bắt đầu marker tại: " + lineStartIndex);
-        
-        // Xóa tất cả dòng comment trống trước marker
-        let checkIndex = lineStartIndex - 1;
-        while (checkIndex >= 0 && (fileContent[checkIndex] === '\n' || fileContent[checkIndex] === '\r' || fileContent[checkIndex] === ' ' || fileContent[checkIndex] === '\t')) {
-            checkIndex--;
-        }
-        
-        // Tìm dòng cuối cùng trước khu vực trắng
-        let lastCodeLine = fileContent.lastIndexOf('\n', checkIndex);
-        if (lastCodeLine === -1) lastCodeLine = 0;
-        else lastCodeLine++; // Sau dòng \n
-        
-        console.log("[AUTO_ADJUST] Dòng code cuối cùng tại: " + lastCodeLine);
-        
-        // Tạo khu vực phân cách 30 dòng
-        let separatorLines = "";
-        for (let i = 1; i <= 30; i++) {
-            separatorLines += "// Dòng " + i + " - Phân cách\n";
-        }
-        
-        // Xây dựng file mới
-        let newContent = fileContent.substring(0, lastCodeLine) + "\n" + separatorLines + fileContent.substring(lineStartIndex);
-        
-        console.log("[AUTO_ADJUST] ✅ Đã tạo file với 30 dòng trắng phân cách");
-        
-        // Lưu file
-        fs.remove(filePath); // Xóa file cũ
-        fs.writeFile(filePath, newContent, 'w');
-        
-        console.log("[AUTO_ADJUST] ✅ Đã lưu file thành công!");
-        toast("✅ Đã chỉnh sửa file - Thêm 30 dòng trắng phân cách", "center", 2);
-        return true;
-        
-    } catch (e) {
-        console.log("[AUTO_ADJUST] ❌ Lỗi: " + e.message);
-        toast("⚠️ Lỗi chỉnh sửa file: " + e.message, "center", 2);
-        return false;
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 🎯 HÀM KIỂM TRA VÀ HIỂN THỊ DIALOG CẬP NHẬT (CHO FILE CHÍNH)
-// ═══════════════════════════════════════════════════════════════
-function checkAndShowUpdateDialogForMain() {
-    const pathUpdateStatus = pathData + "update_status.txt";
-    
-    console.log("[UPDATE] ═══════════════════════════════════════");
-    console.log("[UPDATE] 🔄 BẮT ĐẦU KIỂM TRA CẬP NHẬT CODE");
-    console.log("[UPDATE] ═══════════════════════════════════════");
-    
-    toast("", "center", 1);
-    toast("╔═════════════════════════════════╗", "center", 1);
-    toast("║  🔄 KIỂM TRA CẬP NHẬT CODE    ║", "center", 1);
-    toast("╚═════════════════════════════════╝", "center", 2);
-    
-    usleep(1000000);
-    
-    // ✅ BƯỚC 1: CỐ GẮNG TẢI CODE TỪ GITHUB
-    console.log("[UPDATE] Bước 1: Cố gắng tải code từ GitHub...");
-    toast("📥 Đang tải code từ GitHub...", "center", 1);
-    usleep(500000);
-    
-    let downloadSuccess = downloadUpdateFromGithubForMain();
-    
-    if (downloadSuccess) {
-        // ✅ TẢI THÀNH CÔNG
-        console.log("[UPDATE] ✅ Tải code từ GitHub thành công!");
-        
-        // ✅ AUTO ADJUST FILE
-        console.log("[UPDATE] Bước 2: Chỉnh sửa file để thêm 30 dòng trắng...");
-        toast("🔧 Chỉnh sửa file...", "center", 1);
-        usleep(500000);
-        
-        let adjustSuccess = autoAdjustSeparatorForMain(rootDir() + "/Facebook/regNVR.js");
-        if (!adjustSuccess) {
-            console.log("[UPDATE] ⚠️ Chỉnh sửa file thất bại, nhưng tiếp tục");
-        }
-        
-        // ✅ HIỂN THỊ THÔNG BÁO UPDATE THÀNH CÔNG
-        console.log("[UPDATE] ✅ CẬP NHẬT CODE THÀNH CÔNG!");
-        toast("", "center", 1);
-        toast("╔═════════════════════════════════╗", "center", 1);
-        toast("║  ✅ ĐÃ UPDATE THÀNH CÔNG      ║", "center", 1);
-        toast("╚═════════════════════════════════╝", "center", 3);
-        
-        saveUpdateStatusForMain(true);
-        usleep(2000000);
-        return true;
-    }
-    
-    // ❌ TẢI THẤT BẠI - DÙNG CODE HIỆN TẠI
-    console.log("[UPDATE] ❌ Tải từ GitHub thất bại!");
-    
-    // ✅ HIỂN THỊ THÔNG BÁO KHÔNG UPDATE
-    toast("", "center", 1);
-    toast("╔═════════════════════════════════╗", "center", 1);
-    toast("║  ⚠️ KHÔNG UPDATE CODE         ║", "center", 1);
-    toast("║  (Dùng code hiện tại)          ║", "center", 1);
-    toast("╚═════════════════════════════════╝", "center", 3);
-    
-    console.log("[UPDATE] ⏭️ Sử dụng code hiện tại");
-    saveUpdateStatusForMain(false);
-    usleep(2000000);
-    
-    return false;
-}
-// ═══════════════════════════════════════════════════════════════
-// 🚀 AUTO-START UPDATE MECHANISM (CHẠY NGAY KHI FILE LOAD)
-// ═══════════════════════════════════════════════════════════════
-// ⚡ PHẦN NÀY LUÔN CHẠY - KHÔNG PHỤ THUỘC VÀO "if (test == 0)" Ở TRÊN
-// Mục đích: Đảm bảo update code chạy độc lập với main code
-// Khi nào chạy: 
-//   - Nếu file được tải lại từ update (appRun) → test = 0 → bỏ qua
-//   - Nếu chỉnh sửa if (test == 0) → test != 0 → auto-start update
-//   - Nếu xóa hết logic ở trên → auto-start vẫn chạy update
-
-(function autoStartUpdateMechanism() {
-    try {
-        // Kiểm tra xem có cần chạy update không
-        if (typeof test === 'undefined' || test != 0) {
-            console.log("[AUTO_START] 🔄 Khởi động cơ chế update độc lập...");
-            usleep(500000); // Chờ 0.5 giây để file fully load
-            checkAndShowUpdateDialogForMain();
-        } else {
-            console.log("[AUTO_START] ⏭️ Bỏ qua update (test == 0 - main code đang chạy)");
-        }
-    } catch (e) {
-        console.log("[AUTO_START] ⚠️ Lỗi auto-start: " + e.message);
-    }
-})();
-
-// ═══════════════════════════════════════════════════════════════
-// 🚀 KẾT THÚC CODE UPDATE
-// ═══════════════════════════════════════════════════════════════
