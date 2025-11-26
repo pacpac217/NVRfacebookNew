@@ -3569,4 +3569,4 @@ function checkAndShowUpdateDialogForMain() {
     
     return false;
 }
-//Code mới update bản 0.2
+//Code mới update bản 0.3 fix cập nhật code luôn
