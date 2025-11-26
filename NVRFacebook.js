@@ -57,7 +57,7 @@ var base64 = (function () {
 })();
 
 // 🚫 TẮT TOÀN BỘ CONSOLE.LOG
-console.log = function () { }; // Override console.log thành hàm rỗng
+//console.log = function () { }; // Override console.log thành hàm rỗng
 
 const pathData = rootDir() + "/Facebook/data/";
 const imgKhongGuiLaiMa = pathData + "imgKhongGuiLaiMa.png";
@@ -3381,17 +3381,20 @@ let test = 0;
 // 🚀 KIỂM TRA UPDATE TỪ GITHUB TRƯỚC KHI CHẠY REG CODE
 // ═══════════════════════════════════════════════════════════════
 console.log("[MAIN] Kiểm tra cập nhật từ GitHub...");
+toast("🔍 Kiểm tra update từ GitHub...", "center", 2);
 let shouldRunWithUpdateCode = checkAndShowUpdateDialogForMain();
 
 if (shouldRunWithUpdateCode) {
     // Đã update xong - khởi động lại file
     console.log("[MAIN] ✅ Update thành công! Khởi động lại file với code mới...");
+    toast("✅ Update thành công! Khởi động lại...", "center", 2);
     usleep(1000000);
     appRun(rootDir() + "/Facebook/regNVR.js");
     // Thoát khỏi file cũ - không chạy reg code cũ
 }
 
 console.log("[MAIN] Bắt đầu chạy tool...");
+toast("▶️ Bắt đầu chạy tool...", "center", 1);
 
 if (test == 0) {
     let thoigianhientai = new Date();
@@ -3462,4 +3465,151 @@ if (test == 0) {
         usleep(3000000);
     }
 }
-//Code mới
+
+// ═══════════════════════════════════════════════════════════════
+// 🎯 HÀM DOWNLOAD CODE TỪ GITHUB
+// ═══════════════════════════════════════════════════════════════
+function downloadUpdateFromGithubForMain() {
+    const githubUrl = "https://raw.githubusercontent.com/pacpac217/NVRfacebookNew/refs/heads/main/NVRFacebook.js";
+    const currentFilePath = rootDir() + "/Facebook/regNVR.js";
+    const tempFilePath = currentFilePath + ".tmp";
+    
+    console.log("[DOWNLOAD] Bắt đầu tải code từ GitHub");
+    console.log("[DOWNLOAD] URL: " + githubUrl);
+    console.log("[DOWNLOAD] Đường dẫn lưu: " + currentFilePath);
+    toast("📥 Đang tải code từ GitHub...", "center", 2);
+    
+    try {
+        // Xóa file tạm nếu tồn tại
+        try {
+            fs.remove(tempFilePath);
+        } catch (e) {}
+        
+        // Tải file từ GitHub
+        let curlCommand = `curl -s "${githubUrl}" -o "${tempFilePath}"`;
+        console.log("[DOWNLOAD] Thực thi curl command");
+        let result = exec(curlCommand);
+        console.log("[DOWNLOAD] Curl result: " + result);
+        
+        // ✅ KIỂM TRA FILE TẢI VỀ
+        let [downloadedContent, readError] = fs.readFile(tempFilePath);
+        
+        if (!downloadedContent || readError) {
+            console.log("[DOWNLOAD] ❌ Không thể đọc file tải về: " + readError);
+            toast("❌ Không thể đọc file tải về", "center", 2);
+            return false;
+        }
+        
+        // ✅ KIỂM TRA KÍCH THƯỚC FILE
+        let fileSize = downloadedContent.length;
+        let lineCount = downloadedContent.split('\n').length;
+        
+        console.log("[DOWNLOAD] Kích thước file: " + fileSize + " bytes, Số dòng: " + lineCount);
+        
+        // Nếu file quá nhỏ (dưới 10 dòng hoặc trống)
+        if (fileSize < 100 || lineCount < 10) {
+            console.log("[DOWNLOAD] ❌ File tải về quá nhỏ (chỉ " + lineCount + " dòng). Dùng code hiện tại");
+            toast("❌ File tải về không hợp lệ (quá nhỏ)", "center", 2);
+            usleep(1000000);
+            // Xóa file tạm
+            try {
+                fs.remove(tempFilePath);
+            } catch (e) {}
+            return false;
+        }
+        
+        // ✅ KIỂM TRA NỘI DUNG FILE
+        // Nếu file chứa HTML error (thường khi link lỗi)
+        if (downloadedContent.indexOf("404") !== -1 || downloadedContent.indexOf("<!DOCTYPE") !== -1) {
+            console.log("[DOWNLOAD] ❌ File tải về là lỗi HTTP. Dùng code hiện tại");
+            toast("❌ Link GitHub lỗi (404 hoặc lỗi server)", "center", 2);
+            usleep(1000000);
+            // Xóa file tạm
+            try {
+                fs.remove(tempFilePath);
+            } catch (e) {}
+            return false;
+        }
+        
+        console.log("[DOWNLOAD] ✅ File tải về hợp lệ. Ghi đè lên file cũ...");
+        
+        // Xóa file cũ và thay thế bằng file mới
+        try {
+            fs.remove(currentFilePath);
+        } catch (e) {}
+        
+        // Ghi đè file cũ bằng cách sao chép file tạm
+        exec(`mv "${tempFilePath}" "${currentFilePath}"`);
+        
+        console.log("[DOWNLOAD] ✅ Đã ghi đè file thành công!");
+        toast("✅ Tải & cập nhật code thành công!", "center", 2);
+        usleep(1500000);
+        
+        return true;
+        
+    } catch (e) {
+        console.log("[DOWNLOAD] ❌ Lỗi: " + e.message);
+        toast("❌ Lỗi tải file: " + e.message, "center", 3);
+        usleep(1000000);
+        // Xóa file tạm khi lỗi
+        try {
+            fs.remove(tempFilePath);
+        } catch (e) {}
+        return false;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 🎯 HÀM LƯU TRẠNG THÁI VÀO FILE
+// ═══════════════════════════════════════════════════════════════
+// (Hàm này không còn cần dùng - chỉ tải file từ GitHub mà thôi)
+function checkAndShowUpdateDialogForMain() {
+    console.log("[UPDATE] ═══════════════════════════════════════");
+    console.log("[UPDATE] 🔄 BẮT ĐẦU KIỂM TRA CẬP NHẬT CODE");
+    console.log("[UPDATE] ═══════════════════════════════════════");
+    
+    toast("", "center", 1);
+    toast("╔═════════════════════════════════╗", "center", 1);
+    toast("║  🔄 KIỂM TRA CẬP NHẬT CODE    ║", "center", 1);
+    toast("╚═════════════════════════════════╝", "center", 2);
+    
+    usleep(1000000);
+    
+    // ✅ BƯỚC 1: CỐ GẮNG TẢI CODE TỪ GITHUB
+    console.log("[UPDATE] Bước 1: Cố gắng tải code từ GitHub...");
+    toast("📥 Đang tải code từ GitHub...", "center", 1);
+    usleep(500000);
+    
+    let downloadSuccess = downloadUpdateFromGithubForMain();
+    
+    if (downloadSuccess) {
+        // ✅ TẢI THÀNH CÔNG
+        console.log("[UPDATE] ✅ Tải code từ GitHub thành công!");
+        
+        // ✅ HIỂN THỊ THÔNG BÁO UPDATE THÀNH CÔNG
+        console.log("[UPDATE] ✅ CẬP NHẬT CODE THÀNH CÔNG!");
+        toast("", "center", 1);
+        toast("╔═════════════════════════════════╗", "center", 1);
+        toast("║  ✅ ĐÃ UPDATE THÀNH CÔNG      ║", "center", 1);
+        toast("╚═════════════════════════════════╝", "center", 3);
+        
+        usleep(2000000);
+        return true;
+    }
+    
+    // ❌ TẢI THẤT BẠI - DÙNG CODE HIỆN TẠI
+    console.log("[UPDATE] ❌ Tải từ GitHub thất bại!");
+    
+    // ✅ HIỂN THỊ THÔNG BÁO KHÔNG UPDATE
+    toast("", "center", 1);
+    toast("╔═════════════════════════════════╗", "center", 1);
+    toast("║  ⚠️ KHÔNG UPDATE CODE         ║", "center", 1);
+    toast("║  (Dùng code hiện tại)          ║", "center", 1);
+    toast("╚═════════════════════════════════╝", "center", 3);
+    
+    console.log("[UPDATE] ⏭️ Sử dụng code hiện tại");
+    usleep(2000000);
+    
+    return false;
+}
+//Code mới update bản 1.0
