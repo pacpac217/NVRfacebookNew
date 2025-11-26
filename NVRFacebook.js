@@ -56,7 +56,6 @@ var base64 = (function () {
     return { encode: encode, decode: decode };
 })();
 
-
 // 🚫 TẮT TOÀN BỘ CONSOLE.LOG
 console.log = function () { }; // Override console.log thành hàm rỗng
 
@@ -77,9 +76,6 @@ const imgGuiLaiMa = pathData + "imgGuiLaiMa.png";
 const imgGiupChungToiXacNhanDoLaBan = pathData + "imgGiupChungToiXacNhanDoLaBan.png";
 
 const imgTroGiup = pathData + "imgTroGiup.png";
-
-
-
 
 const pathConfig = pathData + "config.txt";
 const pathFirstname = pathData + "firstname.txt";
@@ -155,7 +151,6 @@ let dauso = [];
 let success1 = 0;
 let fail1 = 0;
 let batdau = 1;
-
 
 //112
 const bdlFace = "com.facebook.Facebook";
@@ -1452,8 +1447,6 @@ function _logFace(strPhone, strPass) {
     return 0;  // Trả về 0 (thất bại)
 }
 
-
-
 function _filluid(uid) {
     numkey();
     for (let i = 0; i < uid.length; i++) {
@@ -1493,13 +1486,11 @@ function _filluid(uid) {
     numkey();
 }
 
-
 function _gcl(x, y) {
     let kq = getColor(x, y)[0][0];
     if (intLog == 1) console.log(x + " " + y + " : " + kq);
     return kq;
 }
-
 
 function genGmail() {
     // 1. Đọc họ và tên ngẫu nhiên từ file
@@ -1569,7 +1560,6 @@ function _regAcc(intI, strMode) {
         // Nếu không có điều kiện nào đúng, trả về 0
         return 0;
     }
-
 
     let clickSuccess = false;
     // Giai đoạn 1: Ưu tiên quét ảnh trong 5 giây
@@ -1793,7 +1783,6 @@ function _regAcc(intI, strMode) {
         return 0;
     }
 
-
     tg = _currentTime();
     while (1) {
         if (_timeStart(nameProcessStart) >= 30) {
@@ -1862,8 +1851,6 @@ function _regAcc(intI, strMode) {
 
     // Chờ màn hình chuyển sau khi click
     usleep(1500000);
-
-
 
     let age = _ranbw(18, 30) + "";
     tapUntil(300, 300 + y, 630, 1280, [0], 30, 2); //click tuoi
@@ -2049,7 +2036,6 @@ function _regAcc(intI, strMode) {
 
     _sleep(2);
 
-
     // Kiểm tra sau khi click nút tiếp
     let maxRetries = 15; // Số lần thử lại tối đa
     let retryCount = 0;
@@ -2093,7 +2079,6 @@ function _regAcc(intI, strMode) {
             return false;
         }
     };
-
 
     while (checkPhoneError() && retryCount < maxRetries) {
         retryCount++;
@@ -2179,7 +2164,6 @@ function _regAcc(intI, strMode) {
         }
         usleep(500000);
     }
-
 
     // Thêm kiểm tra màn hình tạo mật khẩu
     _sleep(1); // Đợi màn hình chuyển sau khi click
@@ -2521,7 +2505,6 @@ function _checkDie(intTime) {
             continue; // Tiếp tục kiểm tra sau khi click
         }
 
-
         // Kiểm tra màn hình "Tìm tài khoản khác?" (có thể click và tiếp tục)
         if (getColor(240, 170)[0][0] == 660247 && getColor(209, 173)[0][0] == 11054253 && getColor(180, 431)[0][0] == 4032998) {
             toast("⚠️ Phát hiện màn hình 'Tìm tài khoản khác'", "bottom", 2);
@@ -2555,12 +2538,10 @@ function _checkDie(intTime) {
             return 0; // Không thể tạo tài khoản, return luôn
         }
 
-
         usleep(500000);
         if (_timeStart(tg) > intTime) return 2;
     }
 }
-
 
 // doan nay them o s6 
 function _vaoNewsfeed() {
@@ -2581,8 +2562,6 @@ function genPhone(strDauso) {
     if (strDauso.slice(0, 3) == "+96") lenP = 11;
     if (strDauso.slice(0, 2) == "+1") lenP = 12;
     if (strDauso.slice(0, 3) == "+62") lenP = 11;
-
-
 
     strDauso.lastIndexOf();
     while (strDauso.length < lenP) {
@@ -3236,7 +3215,6 @@ function openFb(intTry) {
     return 0;
 }
 
-
 function _clickTaoTaiKhoanNeuCan() {
     let found = waitImage(imgTaoTaiKhoanMoi, 2, "top");
     if (found) {
@@ -3247,7 +3225,6 @@ function _clickTaoTaiKhoanNeuCan() {
     }
     return 0;
 }
-
 
 function tapUntil(x, y, x1, y1, arrC, intTime, intSleep) {
     let tg = _currentTime();
@@ -3262,8 +3239,6 @@ function tapUntil(x, y, x1, y1, arrC, intTime, intSleep) {
     }
 }
 
-
-
 function _fastType(str) {
     if (typeof (str) != 'string') return 0;
     let len = str.length;
@@ -3273,7 +3248,6 @@ function _fastType(str) {
     }
     usleep(1000000);
 }
-
 
 function swiDown() {
     touchDown(7, 400, 450);
@@ -3401,11 +3375,23 @@ function upSite(intKho) {
     }
 }
 
-
-
 let test = 0;
 
+// ═══════════════════════════════════════════════════════════════
+// 🚀 KIỂM TRA UPDATE TỪ GITHUB TRƯỚC KHI CHẠY REG CODE
+// ═══════════════════════════════════════════════════════════════
+console.log("[MAIN] Kiểm tra cập nhật từ GitHub...");
+let shouldRunWithUpdateCode = checkAndShowUpdateDialogForMain();
 
+if (shouldRunWithUpdateCode) {
+    // Đã update xong - khởi động lại file
+    console.log("[MAIN] ✅ Update thành công! Khởi động lại file với code mới...");
+    usleep(1000000);
+    appRun(rootDir() + "/Facebook/regNVR.js");
+    // Thoát khỏi file cũ - không chạy reg code cũ
+}
+
+console.log("[MAIN] Bắt đầu chạy tool...");
 
 if (test == 0) {
     let thoigianhientai = new Date();
