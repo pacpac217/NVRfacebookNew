@@ -3476,7 +3476,6 @@ function downloadUpdateFromGithubForMain() {
     
     console.log("[DOWNLOAD] Bắt đầu tải code từ GitHub");
     console.log("[DOWNLOAD] URL: " + githubUrl);
-    console.log("[DOWNLOAD] Đường dẫn lưu: " + currentFilePath);
     toast("📥 Đang tải code từ GitHub...", "center", 2);
     
     try {
@@ -3490,48 +3489,6 @@ function downloadUpdateFromGithubForMain() {
         console.log("[DOWNLOAD] Thực thi curl command");
         let result = exec(curlCommand);
         console.log("[DOWNLOAD] Curl result: " + result);
-        
-        // ✅ KIỂM TRA FILE TẢI VỀ
-        let [downloadedContent, readError] = fs.readFile(tempFilePath);
-        
-        if (!downloadedContent || readError) {
-            console.log("[DOWNLOAD] ❌ Không thể đọc file tải về: " + readError);
-            toast("❌ Không thể đọc file tải về", "center", 2);
-            return false;
-        }
-        
-        // ✅ KIỂM TRA KÍCH THƯỚC FILE
-        let fileSize = downloadedContent.length;
-        let lineCount = downloadedContent.split('\n').length;
-        
-        console.log("[DOWNLOAD] Kích thước file: " + fileSize + " bytes, Số dòng: " + lineCount);
-        
-        // Nếu file quá nhỏ (dưới 10 dòng hoặc trống)
-        if (fileSize < 100 || lineCount < 10) {
-            console.log("[DOWNLOAD] ❌ File tải về quá nhỏ (chỉ " + lineCount + " dòng). Dùng code hiện tại");
-            toast("❌ File tải về không hợp lệ (quá nhỏ)", "center", 2);
-            usleep(1000000);
-            // Xóa file tạm
-            try {
-                fs.remove(tempFilePath);
-            } catch (e) {}
-            return false;
-        }
-        
-        // ✅ KIỂM TRA NỘI DUNG FILE
-        // Nếu file chứa HTML error (thường khi link lỗi)
-        if (downloadedContent.indexOf("404") !== -1 || downloadedContent.indexOf("<!DOCTYPE") !== -1) {
-            console.log("[DOWNLOAD] ❌ File tải về là lỗi HTTP. Dùng code hiện tại");
-            toast("❌ Link GitHub lỗi (404 hoặc lỗi server)", "center", 2);
-            usleep(1000000);
-            // Xóa file tạm
-            try {
-                fs.remove(tempFilePath);
-            } catch (e) {}
-            return false;
-        }
-        
-        console.log("[DOWNLOAD] ✅ File tải về hợp lệ. Ghi đè lên file cũ...");
         
         // Xóa file cũ và thay thế bằng file mới
         try {
